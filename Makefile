@@ -30,10 +30,10 @@ DST_IBM := $(SRC_FILES:.wav=-ibm.txt)
 
 all: # Do nothing when no arguments given
 
-checkdirs: $(SRC_DIR)
+checkdirs: $(DATA_DIR)
 
-$(SRC_DIR):
-    mkdir $(SRC_DIR)
+$(DATA_DIR):
+    mkdir -p $@
 
 depends:
     echo "ffmpeg needs to be installed manually, and the binaries should be in PATH. See https://ffmpeg.org/download.html."
