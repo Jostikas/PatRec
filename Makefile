@@ -7,7 +7,7 @@ SRC := $(wildcard $(TOPICS))
 #-------------------------------------------------
 # You shouldn't need to change anything under here.
 ALL_TOPICS := Orange Rainbow Wolverine January Unicorn Sushi Donald_Trump Coldplay Nuclear_Reactor Bon_Jovi
-DATA_DIR := data/
+DATA_DIR := ./data/
 DL_NAME = -o $(CURRENT_TOPIC)-%(playlist_index)d.wav
 DL_OPTIONS := --extract-audio --audio-format wav --audio-quality 16K
 Orange_PL := https://www.youtube.com/playlist?list=PLXUEko325Z-D7BjUkNDi5GvOU9dey8Cmb
@@ -33,14 +33,15 @@ all: # Do nothing when no arguments given
 checkdirs: $(DATA_DIR)
 
 $(DATA_DIR):
-    mkdir -p $@
+	echo $@
+	mkdir -p $@
 
 depends:
-    echo "ffmpeg needs to be installed manually, and the binaries should be in PATH. See https://ffmpeg.org/download.html."
-    pip install youtube-dl pocketsphinx havenondemand SpeechRecognition
+	echo "ffmpeg needs to be installed manually, and the binaries should be in PATH. See https://ffmpeg.org/download.html."
+	pip install youtube-dl pocketsphinx havenondemand SpeechRecognition
 
 download: checkdirs
-    %(foreach CURRENT_TOPIC, $(TOPICS), youtube-dl $(DL_OPTIONS) $(DL_NAME) $($(CURRENT_TOPIC)_PL)
+	%(foreach CURRENT_TOPIC, $(TOPICS), youtube-dl $(DL_OPTIONS) $(DL_NAME) $($(CURRENT_TOPIC)_PL)
 
 %-sphinx.txt: %.wav
 	python sphinx.py $< $@
