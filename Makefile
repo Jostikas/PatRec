@@ -7,7 +7,7 @@ SRC := $(wildcard $(TOPICS))
 #-------------------------------------------------
 # You shouldn't need to change anything under here.
 ALL_TOPICS := Orange Rainbow Wolverine January Unicorn Sushi Donald_Trump Coldplay Nuclear_Reactor Bon_Jovi
-DATA_DIR := ./data/
+DATA_DIR := data
 DL_NAME = -o $(CURRENT_TOPIC)-%(playlist_index)d.wav
 DL_OPTIONS := --extract-audio --audio-format wav --audio-quality 16K
 Orange_PL := https://www.youtube.com/playlist?list=PLXUEko325Z-D7BjUkNDi5GvOU9dey8Cmb
