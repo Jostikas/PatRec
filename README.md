@@ -33,7 +33,9 @@ Three speech recognition solutions are used:
     * havenondemand
     * SpeechRecognition
 
-All the python packages should be installed by running `make depends`
+All the python packages should be installed by running `make depends`.
+If Python is installed systemwide, this needs to be run with
+administrative privileges.
 
 HavenOnDemand and IBM Watson require
 

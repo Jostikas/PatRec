@@ -34,7 +34,7 @@ checkdirs: $(DATA_DIR)
 
 $(DATA_DIR):
 	echo $@
-	mkdir -p $@
+	mkdir $@
 
 depends:
 	echo "ffmpeg needs to be installed manually, and the binaries should be in PATH. See https://ffmpeg.org/download.html."
