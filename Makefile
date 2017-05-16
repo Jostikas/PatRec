@@ -8,7 +8,6 @@ SRC := $(wildcard $(TOPICS))
 # You shouldn't need to change anything under here.
 ALL_TOPICS := Orange Rainbow Wolverine January Unicorn Sushi Donald_Trump Coldplay Nuclear_Reactor Bon_Jovi
 DATA_DIR := data
-DL_NAME = -o $(CURRENT_TOPIC)-%(playlist_index)d.wav
 DL_OPTIONS := --extract-audio --audio-format wav --audio-quality 16K
 Orange_PL := https://www.youtube.com/playlist?list=PLXUEko325Z-D7BjUkNDi5GvOU9dey8Cmb
 Rainbow_PL := https://www.youtube.com/playlist?list=PLXUEko325Z-D7uFK7B4wjDzEN9a3YraF0
@@ -26,22 +25,38 @@ DST_SPHINX := $(SRC_FILES:.wav=-sphinx.txt)
 DST_HAVEN := $(SRC_FILES:.wav=-haven.txt)
 DST_IBM := $(SRC_FILES:.wav=-ibm.txt)
 
-.PHONY: all sphinx haven ibm csv clean_sphinx clean_haven clean_ibm clean_all checkdirs download
+# Create targets for download jobs
+DL_JOBS := $(addprefix DL_JOB_,$(TOPICS))
+DL_CMDS := $()addprefix
+
+.PHONY: all sphinx haven ibm csv clean_sphinx clean_haven clean_ibm clean_all checkdirs download DL_JOB_%
 
 all: # Do nothing when no arguments given
 
+# Check and if necessary, create data dir
 checkdirs: $(DATA_DIR)
 
 $(DATA_DIR):
 	echo $@
 	mkdir $@
 
+# check dependencies
 depends:
 	echo "ffmpeg needs to be installed manually, and the binaries should be in PATH. See https://ffmpeg.org/download.html."
 	pip install youtube-dl pocketsphinx havenondemand SpeechRecognition
 
-download: checkdirs
-	%(foreach CURRENT_TOPIC, $(TOPICS), youtube-dl $(DL_OPTIONS) $(DL_NAME) $($(CURRENT_TOPIC)_PL)
+# Download videos
+DL_NAME = -o $(DATA_DIR)/$*-%(playlist_index)d.wav
+DL_URL = $($*_PL)
+define do-download
+youtube-dl $(DL_OPTIONS) $(DL_NAME) $(DL_URL)
+endef
+
+DL_JOB_%:
+	youtube-dl $(DL_OPTIONS) $(DL_NAME) $(DL_URL)
+
+download: checkdirs $(DL_JOBS)
+	echo "Downloaded."
 
 %-sphinx.txt: %.wav
 	python sphinx.py $< $@
