@@ -5,17 +5,17 @@ For a particular keyword, download first 20 English videos shorter than 5 min, f
 `filter_words` contains words that are not considered for word frequency
 calculation.
 
-### Keywords:
-* Orange
-* Rainbow
-* Wolverine
-* Unicorn
-* Nuclear Reactor
-* Bon Jovi
-* ColdPlay
-* Donald Trump
-* January
-* Sushi
+### Keywords and playlists:
+* Orange - https://www.youtube.com/playlist?list=PLXUEko325Z-D7BjUkNDi5GvOU9dey8Cmb
+* Rainbow - https://www.youtube.com/playlist?list=PLXUEko325Z-D7uFK7B4wjDzEN9a3YraF0
+* Wolverine - https://www.youtube.com/playlist?list=PLXUEko325Z-BX_lS2HBtszzQ1ZqV2crrm
+* Unicorn - https://www.youtube.com/playlist?list=PLIERL4oks-leKg3101ERCEsyE_Rs2FEuP
+* Nuclear Reactor - https://www.youtube.com/playlist?list=PLIERL4oks-ldUhDQ0_ZrLGQLOYxu25nKy
+* Bon Jovi - https://www.youtube.com/playlist?list=PLIERL4oks-lerKqL_3zQ6Ft154kRkl8zs
+* ColdPlay - https://www.youtube.com/playlist?list=PLIERL4oks-lflMeU0TLNhHIuv26BYGhRN
+* Donald Trump - https://www.youtube.com/playlist?list=PLIERL4oks-ldSO-E5NwoRmahyLeT8xNrw
+* January - https://www.youtube.com/playlist?list=PLIERL4oks-lfB3c3blAE6r3J9JRnKwqoK
+* Sushi - https://www.youtube.com/playlist?list=PLIERL4oks-ldvb_2lBcfCKIbjzkGwXhnM
 
 ### Implementation
 The project uses a makefile for running different tasks of the workflow. Tasks are implemented using python scripts and
