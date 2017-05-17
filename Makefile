@@ -1,14 +1,14 @@
+ALL_TOPICS := Orange Rainbow Wolverine January Unicorn Sushi Donald_Trump Coldplay Nuclear_Reactor Bon_Jovi
 #Set these, likely by passing in from command line
 # For processing whole topics, pass in topic names as a list to TOPICS
-TOPICS = $(ALL_TOPICS)
+TOPICS := $(ALL_TOPICS)
 # For processing a particular file/s, pass in it's/their name to SRC
-SRC := $(wildcard $(TOPICS))
+SRC := $(addsuffix -*.wav,$(TOPICS))
 
 #-------------------------------------------------
 # You shouldn't need to change anything under here.
-ALL_TOPICS := Orange Rainbow Wolverine January Unicorn Sushi Donald_Trump Coldplay Nuclear_Reactor Bon_Jovi
 DATA_DIR := data
-DL_OPTIONS := --extract-audio --audio-format wav --audio-quality 16K
+CSV_DIR := csv
 Orange_PL := https://www.youtube.com/playlist?list=PLXUEko325Z-D7BjUkNDi5GvOU9dey8Cmb
 Rainbow_PL := https://www.youtube.com/playlist?list=PLXUEko325Z-D7uFK7B4wjDzEN9a3YraF0
 Wolverine_PL := https://www.youtube.com/playlist?list=PLXUEko325Z-BX_lS2HBtszzQ1ZqV2crrm
@@ -20,22 +20,20 @@ Coldplay_PL := https://www.youtube.com/playlist?list=PLIERL4oks-lflMeU0TLNhHIuv2
 Nuclear_Reactor_PL := https://www.youtube.com/playlist?list=PLIERL4oks-ldUhDQ0_ZrLGQLOYxu25nKy
 Bon_Jovi_PL := https://www.youtube.com/playlist?list=PLIERL4oks-lerKqL_3zQ6Ft154kRkl8zs
 
-SRC_FILES := $(sort $(wildcard $(SRC)))
+SRC_FILES := $(sort $(wildcard $(DATA_DIR)/$(SRC)))
 DST_SPHINX := $(SRC_FILES:.wav=-sphinx.txt)
 DST_HAVEN := $(SRC_FILES:.wav=-haven.txt)
 DST_IBM := $(SRC_FILES:.wav=-ibm.txt)
+DST_CENTER := $(SRC_FILES:.wav=-voice.wav)
 
 # Create targets for download jobs
 DL_JOBS := $(addprefix DL_JOB_,$(TOPICS))
-DL_CMDS := $()addprefix
 
-.PHONY: all sphinx haven ibm csv clean_sphinx clean_haven clean_ibm clean_all checkdirs download DL_JOB_%
+.PHONY: all detect sphinx haven ibm csv clean_sphinx clean_haven clean_ibm clean_audio clean_all download DL_JOB_%
 
 all: # Do nothing when no arguments given
 
 # Check and if necessary, create data dir
-checkdirs: $(DATA_DIR)
-
 $(DATA_DIR):
 	echo $@
 	mkdir $@
@@ -46,7 +44,8 @@ depends:
 	pip install youtube-dl pocketsphinx havenondemand SpeechRecognition
 
 # Download videos
-DL_NAME = -o $(DATA_DIR)/$*-%(playlist_index)d.wav
+DL_OPTIONS := -i --extract-audio --audio-format=wav --audio-quality=16K
+DL_NAME = -o $(DATA_DIR)/$*-%(playlist_index)d.%(ext)s
 DL_URL = $($*_PL)
 define do-download
 youtube-dl $(DL_OPTIONS) $(DL_NAME) $(DL_URL)
@@ -55,7 +54,7 @@ endef
 DL_JOB_%:
 	youtube-dl $(DL_OPTIONS) $(DL_NAME) $(DL_URL)
 
-download: checkdirs $(DL_JOBS)
+download: $(DATA_DIR) $(DL_JOBS)
 	echo "Downloaded."
 
 %-sphinx.txt: %.wav
@@ -66,12 +65,20 @@ download: checkdirs $(DL_JOBS)
 
 %-ibm.txt: %.wav
 	python ibm.py $< $@
+
+%-voice.wav: %.wav
+	python extract_center.py $< $@
 	
 sphinx: $(DST_SPHINX)
+	echo $(SRC)
 
 haven: $(DST_HAVEN)
 
 ibm: $(DST_IBM)
+
+detect: sphinx ibm haven
+
+center: $(DST_CENTER)
 
 csv: $(DST_HAVEN) $(DST_IBM) $(DST_SPHINX)
 
@@ -83,6 +90,9 @@ clean_haven:
 	
 clean_ibm:
 	rm -f $(DST_IBM)
+
+clean_audio:
+	rm -f $(SRC_FILES)
 	
 clean_all: clean_sphinx clean_haven clean_ibm
 

@@ -2,6 +2,8 @@ WordCounter Pattern Recognition project
 ===
 ### Task:
 For a particular keyword, download first 20 English videos shorter than 5 min, find all words and list word frequencies per video.
+`filter_words` contains words that are not considered for word frequency
+calculation.
 
 ### Keywords:
 * Orange
@@ -23,6 +25,16 @@ Three speech recognition solutions are used:
 * HavenOnDemand
 * IBM Watson Speech Recognition
 
+For evaluation, the usernames and passwords for IBM and Haven have
+been hardcoded.
+
+As an evolution, a voice extraction implementation is included in
+`extract-center.py`, based on http://www.virtualdub.org/blog/pivot/entry.php?id=102
+It is accessible via make as `make center` and accepts the same arguments
+as the other tasks. It has not been included in the workflow, as a need
+for it only became apparent as we ran the dataset for the poster. As such,
+it is tested only on short snippets of sound.
+
 ### Requirements:
 * GNU Make
 * Python 3.5 (3.4 should work, but is untested)
@@ -37,7 +49,17 @@ All the python packages should be installed by running `make depends`.
 If Python is installed systemwide, this needs to be run with
 administrative privileges.
 
-HavenOnDemand and IBM Watson require
-
 ### Running
-The following commands should form a workflow to run
+The following commands should form a workflow. All accept optional topic
+flags of the form `TOPIC="Wolverine Bon_Jovi"` (note the underscore) and all but downloading
+accept input file lists of the form `SRC="Wolverine-2.wav Bon_Jovi-[2-5].wav"`.
+
+* `make download` - Downloads videos
+* `make detect` - Runs all three detection algorithms on the files
+* `make csv` - Create CSV files with word frequencies.
+
+To hasten processing, it will make sense to pass `-j[num_processes]` to
+`make`. However, in such a case it is advisable to perform the processing
+separately with `make -j[num_cpu] sphinx`, `make -j8 ibm` and `make -j2 haven`,
+as sphinx is CPU-bound and HavenOnDemand heavily throttles request rate,
+causing failure.

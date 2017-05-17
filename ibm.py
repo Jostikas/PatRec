@@ -10,6 +10,11 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 import json
+import base64
+
+URL = "https://stream-fra.watsonplatform.net/speech-to-text/api"
+USERNAME = "f0bea13c-1581-450e-b019-4deee5b86e58"
+PASSWORD = "Sy2A22q6vOHT"
 
 """Monkey-patch the Recognizer class, as it's recognize_ibm method doesn't support api url input (has a hardcoded url that
 is wrong/only for some countries.
@@ -96,10 +101,10 @@ if __name__ == '__main__':
         print("Processing {} -> {}".format(AUDIO_FILE, OUT_FILE))
         with open(OUT_FILE, 'w') as outfile:
             outfile.write(r.recognize_ibm(audio,
-                                          username="f0bea13c-1581-450e-b019-4deee5b86e58",
-                                          password="Sy2A22q6vOHT",
+                                          username=USERNAME,
+                                          password=PASSWORD,
                                           language="en-US",
-                                          url="https://stream-fra.watsonplatform.net/speech-to-text/api"))
+                                          url=URL))
         print("{} processed in {}s".format(AUDIO_FILE, time()-s_time))
         sys.exit(0)
     except sr.UnknownValueError:
