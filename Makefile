@@ -43,16 +43,13 @@ depends:
 	echo "ffmpeg needs to be installed manually, and the binaries should be in PATH. See https://ffmpeg.org/download.html."
 	pip install youtube-dl pocketsphinx havenondemand SpeechRecognition
 
-# Download videos
+# Download videos. Ignore download errors.
 DL_OPTIONS := -i --extract-audio --audio-format=wav --audio-quality=16K
 DL_NAME = -o $(DATA_DIR)/$*-%(playlist_index)d.%(ext)s
 DL_URL = $($*_PL)
-define do-download
-youtube-dl $(DL_OPTIONS) $(DL_NAME) $(DL_URL)
-endef
 
 DL_JOB_%:
-	youtube-dl $(DL_OPTIONS) $(DL_NAME) $(DL_URL)
+	-youtube-dl $(DL_OPTIONS) $(DL_NAME) $(DL_URL)
 
 download: $(DATA_DIR) $(DL_JOBS)
 	echo "Downloaded."
