@@ -20,7 +20,7 @@ Coldplay_PL := https://www.youtube.com/playlist?list=PLIERL4oks-lflMeU0TLNhHIuv2
 Nuclear_Reactor_PL := https://www.youtube.com/playlist?list=PLIERL4oks-ldUhDQ0_ZrLGQLOYxu25nKy
 Bon_Jovi_PL := https://www.youtube.com/playlist?list=PLIERL4oks-lerKqL_3zQ6Ft154kRkl8zs
 
-SRC_FILES := $(sort $(wildcard $(DATA_DIR)/$(SRC)))
+SRC_FILES := $(foreach pattern,$(SRC),$(sort $(wildcard $(DATA_DIR)/$(pattern))))
 DST_SPHINX := $(SRC_FILES:.wav=-sphinx.txt)
 DST_HAVEN := $(SRC_FILES:.wav=-haven.txt)
 DST_IBM := $(SRC_FILES:.wav=-ibm.txt)
@@ -67,11 +67,13 @@ download: $(DATA_DIR) $(DL_JOBS)
 	python extract_center.py $< $@
 	
 sphinx: $(DST_SPHINX)
-	echo $(SRC)
+	echo $(DST_SPHINX)
 
 haven: $(DST_HAVEN)
+	echo $(DST_HAVEN)
 
 ibm: $(DST_IBM)
+	echo $(DST_IBM)
 
 detect: sphinx ibm haven
 
