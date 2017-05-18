@@ -25,11 +25,14 @@ DST_SPHINX := $(SRC_FILES:.wav=-sphinx.txt)
 DST_HAVEN := $(SRC_FILES:.wav=-haven.txt)
 DST_IBM := $(SRC_FILES:.wav=-ibm.txt)
 DST_CENTER := $(SRC_FILES:.wav=-voice.wav)
+DST_SPHINX_CSV := $(foreach pattern,$(SRC:-*.wav=-sphinx.csv),$(DATA_DIR)/$(pattern))
+DST_HAVEN_CSV := $(foreach pattern,$(SRC:-*.wav=-haven.csv),$(DATA_DIR)/$(pattern))
+DST_IBM_CSV := $(foreach pattern,$(SRC:-*.wav=-ibm.csv),$(DATA_DIR)/$(pattern))
 
 # Create targets for download jobs
 DL_JOBS := $(addprefix DL_JOB_,$(TOPICS))
 
-.PHONY: all detect sphinx haven ibm csv clean_sphinx clean_haven clean_ibm clean_audio clean_all download DL_JOB_%
+.PHONY: all detect sphinx haven ibm csv clean_sphinx clean_haven clean_ibm clean_audio clean_all download csv DL_JOB_%
 
 all: # Do nothing when no arguments given
 
@@ -67,20 +70,26 @@ download: $(DATA_DIR) $(DL_JOBS)
 	python extract_center.py $< $@
 	
 sphinx: $(DST_SPHINX)
-	echo $(DST_SPHINX)
 
 haven: $(DST_HAVEN)
-	echo $(DST_HAVEN)
 
 ibm: $(DST_IBM)
-	echo $(DST_IBM)
 
 detect: sphinx ibm haven
 
 center: $(DST_CENTER)
 
-csv: $(DST_HAVEN) $(DST_IBM) $(DST_SPHINX)
-
+%-sphinx.csv:
+	python make_csv.py $*-*-sphinx.txt $@
+	
+%-haven.csv:
+	python make_csv.py $*-*-haven.txt $@
+	
+%-ibm.csv:
+	python make_csv.py $*-*-ibm.txt $@
+	
+csv: $(DST_SPHINX_CSV) $(DST_HAVEN_CSV) $(DST_IBM_CSV)
+	
 clean_sphinx:
 	rm -f $(DST_SPHINX)
 	
